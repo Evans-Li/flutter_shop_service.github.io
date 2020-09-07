@@ -50,7 +50,8 @@ class HomeController extends Controller {
       hot_goods.price as price,
       hot_goods.mallprice as mallprice,
       hot_goods.type_id as typeId,
-      goods_type.type_name as typeName FROM hot_goods LEFT JOIN goods_type ON hot_goods.type_id = goods_type.type_id  
+      goods_type.type_name as typeName 
+      FROM hot_goods LEFT JOIN goods_type ON hot_goods.type_id = goods_type.type_id  
       ORDER BY hot_goods.id LIMIT ${page},2
       `
     let hotGoodList = await this.app.mysql.query(sql);
