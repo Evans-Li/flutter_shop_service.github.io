@@ -3,7 +3,7 @@ const { consoleLevel } = require('egg-mock');
 const Controller = require('egg').Controller
 class HomeController extends Controller {
   // 首页数据
-  async homeData(){
+  async homeData() {
     let bannerList = await this.app.mysql.select('banner');
     let cateList = await this.app.mysql.select('category');
     let adPicture = await this.app.mysql.select('ad');
@@ -37,6 +37,26 @@ class HomeController extends Controller {
       }
     }
     console.log('[ok] /homeData')
+  }
+
+  //首页火爆商品
+  async getHomeHotGoods() {
+    let page = this.ctx.request.body.page;
+    // 每次上拉加载特定个数
+    let sql  = `
+      SELECT hot_goods.id as id,
+      hot_goods.image as image,
+      hot_goods.name as name,
+      hot_goods.price as price,
+      hot_goods.mallprice as mallprice,
+      hot_goods.type_id as typeId,
+      goods_type.type_name as typeName FROM hot_goods LEFT JOIN goods_type ON hot_goods.type_id = goods_type.type_id  
+      ORDER BY hot_goods.id LIMIT ${page},2
+      `
+    let hotGoodList = await this.app.mysql.query(sql);
+    this.ctx.body = {
+      data: hotGoodList,
+    }
   }
 }
 
